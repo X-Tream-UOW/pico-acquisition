@@ -1,0 +1,22 @@
+.program reader
+
+.side_set 1 opt
+
+
+.wrap_target
+
+nop side 1    ; make sure RD is high
+
+set pins, 1   ; set CONVST high
+nop [5]       ; wait 30-40ns for the ADC to detect it
+set pins, 0   ; set CONVST back low (triggers the conversion)
+
+wait 0 pin 0  ; wait for BUSY to go low (~650ns)
+nop side 0    ; set RD to low : readout
+nop [5]       ; wait 30-40ns for the ADC to detect it and latch the DB lines
+
+in pins, 17   ; read BUSY + DB[15:0] into ISR (mask BUSY afterwards)
+nop side 1    ; set RD high again
+push block    ; push result to RX FIFO (triggers the main loop to read & restart)
+
+.wrap
