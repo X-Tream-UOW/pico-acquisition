@@ -1,7 +1,8 @@
 .program reader
 
-.side_set 1 opt
+.clock_div 5
 
+.side_set 1 opt
 
 .wrap_target
 
@@ -17,6 +18,6 @@ nop [5]       ; wait 30-40ns for the ADC to detect it and latch the DB lines
 
 in pins, 17   ; read BUSY + DB[15:0] into ISR (mask BUSY afterwards)
 nop side 1    ; set RD high again
-push block    ; push result to RX FIFO (triggers the main loop to read & restart)
+push block    ; push result to RX FIFO (triggers the main loop to read & restart )
 
 .wrap
