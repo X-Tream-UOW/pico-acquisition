@@ -45,4 +45,3 @@ target_link_libraries(ads8405-reader
         pico_stdlib hardware_pio)
 
 pico_add_extra_outputs(ads8405-reader)
-
