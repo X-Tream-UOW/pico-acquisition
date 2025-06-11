@@ -1,6 +1,6 @@
 .program reader
 
-.clock_div 5 
+.clock_div 20
 
 .wrap_target
 

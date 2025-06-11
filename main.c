@@ -50,8 +50,8 @@ int main() {
     // Configure the state machine
     pio_sm_config c = reader_program_get_default_config(offset);
     sm_config_set_set_pins(&c, CS_PIN, 3);    // 3 control lines starting from CS
-    sm_config_set_in_pins(&c, BUSY_PIN);      // For in pins, 17
-    sm_config_set_in_shift(&c, false, true, 16);
+    sm_config_set_in_pins(&c, DB_STARTS);      // For in pins, 17
+    sm_config_set_in_shift(&c, false, true, 17);
 
     pio_sm_init(pio, sm, offset, &c);
     pio_sm_set_enabled(pio, sm, true);
