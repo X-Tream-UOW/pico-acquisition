@@ -37,7 +37,7 @@ add_executable(ads8405-reader)
 
 pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/reader.pio)
 
-target_sources(ads8405-reader PRIVATE main.c)
+target_sources(ads8405-reader PRIVATE main.c gpio_init.c pwm_trigger.c adc_dma.c)
 
 pico_enable_stdio_usb(ads8405-reader 1)
 

@@ -4,8 +4,8 @@
 
 .wrap_target
 
-wait 0 pin 23 ; ensure the pwn clock is down to sync perfectly
-wait 1 pin 23 ; start acquisition on rising edge of the pwm clock
+wait 0 pin 21 ; ensure the pwn clock is down to sync perfectly
+wait 1 pin 21 ; start acquisition on rising edge of the pwm clock
 
 ; --- IDLE ---
 set pins, 0b111        ; RD=1, CONVST=1, CS=1
