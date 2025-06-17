@@ -1,12 +1,15 @@
 .program reader
 .clock_div 1  
-; 125 MHz = 8 ns per cycle
+; 150 MHz ~= 6.66 ns per cycle // TODO : recompute the delays with 150Mhz
 
 .wrap_target
 
+wait 0 pin 23 ; ensure the pwn clock is down to sync perfectly
+wait 1 pin 23 ; start acquisition on rising edge of the pwm clock
+
 ; --- IDLE ---
 set pins, 0b111        ; RD=1, CONVST=1, CS=1
-nop [4]                ; 5 cycles = 40 ns
+nop [3]                ; 5 cycles = 40 ns
 
 ; --- START CONVERSION ---
 set pins, 0b110        ; RD=1, CONVST=1, CS=0

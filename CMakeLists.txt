@@ -42,6 +42,6 @@ target_sources(ads8405-reader PRIVATE main.c)
 pico_enable_stdio_usb(ads8405-reader 1)
 
 target_link_libraries(ads8405-reader
-        pico_stdlib hardware_pio hardware_dma)
+        pico_stdlib hardware_pio hardware_dma hardware_irq hardware_clocks hardware_pwm)
 
 pico_add_extra_outputs(ads8405-reader)
