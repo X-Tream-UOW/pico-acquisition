@@ -1,6 +1,6 @@
 .program reader
 
-.clock_div 20
+.clock_div 10
 
 .wrap_target
 
@@ -17,7 +17,7 @@ set pins, 0b110     ; RD=1, CONVST=1, CS=0
 nop [2]             ; ≥20 ns, wait for BUSY rise
 
 ; --- WAIT FOR CONVERSION TO FINISH ---
-wait 0 pin 0        ; wait until BUSY (pin 0) goes LOW (~560 us)
+wait 0 pin 16        ; wait until BUSY (pin 0) goes LOW (~560 us)
 
 ; --- READ PHASE ---
 set pins, 0b010     ; RD=0, CONVST=1, CS=0 → RD fall enables output latches
