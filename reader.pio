@@ -1,32 +1,32 @@
 .program reader
-
-.clock_div 10
+.clock_div 1  
+; 125 MHz = 8 ns per cycle
 
 .wrap_target
 
 ; --- IDLE ---
-set pins, 0b111     ; RD=1, CONVST=1, CS=1
-nop[2]
+set pins, 0b111        ; RD=1, CONVST=1, CS=1
+nop [4]                ; 5 cycles = 40 ns
 
-; --- BEGIN CONVERSION ---
-set pins, 0b110     ; RD=1, CONVST=1, CS=0 → CS fall to enable the chip
-nop [1]
-set pins, 0b100     ; RD=1, CONVST=0, CS=0 → CONVST fall triggers conversion
-nop [2]             ; ≥20 ns
-set pins, 0b110     ; RD=1, CONVST=1, CS=0
-nop [2]             ; ≥20 ns, wait for BUSY rise
+; --- START CONVERSION ---
+set pins, 0b110        ; RD=1, CONVST=1, CS=0
+nop [2]                ; 3 cycles = 24 ns
+set pins, 0b100        ; RD=1, CONVST=0, CS=0
+nop [4]                ; 5 cycles = 40 ns ≥ tw1
+set pins, 0b110        ; RD=1, CONVST=1, CS=0
+nop [4]                ; 5 cycles = 40 ns ≥ tw2
 
-; --- WAIT FOR CONVERSION TO FINISH ---
-wait 0 pin 16        ; wait until BUSY (pin 0) goes LOW (~560 us)
+; --- WAIT FOR BUSY LOW (~600 ns) ---
+wait 0 pin 16          ; waits for BUSY to drop
 
-; --- READ PHASE ---
-set pins, 0b010     ; RD=0, CONVST=1, CS=0 → RD fall enables output latches
-nop [2]             ; ≥50 ns RD pulse
-in pins, 17         ; Read BUSY + DB[15:0]
-push block          ; Send to FIFO
+; --- READ DATA ---
+set pins, 0b010        ; RD=0, CONVST=1, CS=0
+nop [6]                ; 7 cycles = 56 ns ≥ tw5
+in pins, 16            ; sample DB[15:0]
+push block             ; push to FIFO
 
 ; --- RETURN TO IDLE ---
-set pins, 0b111     ; RD=1, CONVST=1, CS=1
-nop [2]             ; CS high ≥20 ns before next cycle
+set pins, 0b111        ; RD=1, CONVST=1, CS=1
+nop [4]                ; 5 cycles = 40 ns ≥ CS high before next cycle
 
 .wrap
