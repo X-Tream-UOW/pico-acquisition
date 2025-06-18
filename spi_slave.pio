@@ -1,0 +1,15 @@
+.program spi_slave
+
+.wrap_target
+
+wait 0 pin 5       ; Wait for CS LOW
+set y, 7
+
+bitloop:
+    out pins, 1
+    wait 1 pin 0    ; Wait for rising CLK
+    wait 0 pin 0    ; Wait for falling CLK
+    jmp y-- bitloop
+
+jmp 0
+.wrap

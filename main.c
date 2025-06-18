@@ -5,6 +5,8 @@
 #include "pwm_trigger.h"
 #include "gpio_init.h"
 #include "reader.pio.h"
+#include "spi_slave.h"
+#include "spi_dma.h"
 
 #define ACQ_FREQ 50000.0f
 
@@ -18,6 +20,11 @@ int main() {
     sleep_ms(100);
     init_pio_reader_sm();
     setup_dma();
+    start_spi_dma_transfer();
+  
+    uint8_t counter = 0;
+    printf("SPI Ready\n");
+    setup_spi();
 
     while (true) {
 
