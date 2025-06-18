@@ -1,42 +1,18 @@
-#include "hardware/pio.h"
-#include "reader.pio.h"
+#include "pico/stdlib.h"
+#include "gpio_init.h"
 
-#define DB_STARTS  0
-#define DB_COUNT   16
-#define BUSY_PIN   16
-#define CS_PIN     17
-#define CONVST_PIN 18
-#define RD_PIN     19
+void init_gpio(void) {
+    gpio_init(READY_PIN);
+    gpio_set_dir(READY_PIN, GPIO_OUT);
+    gpio_put(READY_PIN, 0);
 
+    gpio_init(ACK_PIN);
+    gpio_set_dir(ACK_PIN, GPIO_IN);
+}
 
-PIO pio = pio0;
-uint sm_reader = 0;
-
-uint offset_reader;
-
-void init_pio_and_gpio() {
-    offset_reader = pio_add_program(pio, &reader_program);
-    sm_reader = pio_claim_unused_sm(pio, true);
-
-    for (int i = 0; i < DB_COUNT; i++)
-        pio_gpio_init(pio, DB_STARTS + i);
-
-    pio_gpio_init(pio, BUSY_PIN);
-    pio_gpio_init(pio, CS_PIN);
-    pio_gpio_init(pio, CONVST_PIN);
-    pio_gpio_init(pio, RD_PIN);
-
-    pio_sm_config c_reader = reader_program_get_default_config(offset_reader);
-    sm_config_set_set_pins(&c_reader, CS_PIN, 3);
-    sm_config_set_in_pins(&c_reader, DB_STARTS);
-    sm_config_set_in_shift(&c_reader, false, true, 16);
-    sm_config_set_fifo_join(&c_reader, PIO_FIFO_JOIN_RX);
-
-    pio_sm_init(pio, sm_reader, offset_reader, &c_reader);
-
-    pio_sm_set_consecutive_pindirs(pio, sm_reader, CS_PIN, 3, true);
-    pio_sm_set_consecutive_pindirs(pio, sm_reader, DB_STARTS, DB_COUNT, false);
-    pio_sm_set_consecutive_pindirs(pio, sm_reader, BUSY_PIN, 1, false);
-
-    pio_sm_set_enabled(pio, sm_reader, true);
+void clear_signals(void) {
+    gpio_set_dir(ACK_PIN, GPIO_OUT);  
+    gpio_put(ACK_PIN, 0);
+    gpio_put(READY_PIN, 0);
+    gpio_set_dir(ACK_PIN, GPIO_IN);
 }

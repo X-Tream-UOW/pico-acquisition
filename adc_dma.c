@@ -1,30 +1,74 @@
-#include "pico/stdlib.h"
 #include "hardware/dma.h"
 #include "hardware/irq.h"
+#include "hardware/pio.h"
+#include "hardware/clocks.h"
+#include "adc_dma.h"
+#include "reader.pio.h"
+#include "pio_reader_sm.h"
 #include "gpio_init.h"
-
-#define BUFFER_SIZE 65536
 
 uint16_t buffer1[BUFFER_SIZE];
 uint16_t buffer2[BUFFER_SIZE];
+
 volatile bool buffer1_ready = false;
 volatile bool buffer2_ready = false;
-int dma_chan;
+volatile bool dma_paused = false;
+
+static int dma_chan;
+extern PIO pio;
+extern uint sm_reader;
 
 void __isr dma_handler() {
     dma_hw->ints0 = 1u << dma_chan;
     static bool ping = false;
+
     if (ping) {
         buffer2_ready = true;
-        dma_channel_set_write_addr(dma_chan, buffer1, true);
+        if (!buffer1_ready) {
+            dma_channel_set_write_addr(dma_chan, buffer1, false);
+            dma_channel_set_trans_count(dma_chan, BUFFER_SIZE, true);
+        } else {
+            dma_paused = true;
+            gpio_put(READY_PIN, 1);
+        }
     } else {
         buffer1_ready = true;
-        dma_channel_set_write_addr(dma_chan, buffer2, true);
+        gpio_put(READY_PIN, 1);
+        if (!buffer2_ready) {
+            dma_channel_set_write_addr(dma_chan, buffer2, false);
+            dma_channel_set_trans_count(dma_chan, BUFFER_SIZE, true);
+        } else {
+            dma_paused = true;
+        }
     }
+
     ping = !ping;
 }
 
+void resume_dma(void) {
+    if (!dma_paused) return;
+
+    if (!buffer1_ready) {
+        dma_paused = false;
+        dma_channel_set_write_addr(dma_chan, buffer1, false);
+    } else if (!buffer2_ready) {
+        dma_paused = false;
+        dma_channel_set_write_addr(dma_chan, buffer2, false);
+    } else {
+        // Still no free buffer: keep paused
+        return;
+    }
+
+    dma_channel_set_trans_count(dma_chan, BUFFER_SIZE, true);
+    dma_channel_start(dma_chan);
+}
+
+
 void setup_dma() {
+
+    gpio_init(READY_PIN);
+    gpio_set_dir(READY_PIN, GPIO_OUT);
+
     dma_chan = dma_claim_unused_channel(true);
     dma_channel_config cfg = dma_channel_get_default_config(dma_chan);
 

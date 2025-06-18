@@ -1,7 +1,7 @@
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
 
-#define PWM_PIN 21
+#define PWM_PIN 23
 
 void setup_pwm(float acquisition_freq) {
     if (acquisition_freq < 1.0f || acquisition_freq > 1.25e6f)

@@ -1,7 +1,10 @@
-#pragma once
-#include "hardware/pio.h"
+#ifndef GPIO_INIT_H
+#define GPIO_INIT_H
 
-extern PIO pio;
-extern uint sm_reader;
+#define READY_PIN 21
+#define ACK_PIN   26
 
-void init_pio_and_gpio();
+void init_gpio(void);
+void clear_signals(void);
+
+#endif
