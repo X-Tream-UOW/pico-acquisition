@@ -25,8 +25,7 @@ wait 0 pin 16          ; waits for BUSY to drop
 ; --- READ DATA ---
 set pins, 0b010        ; RD=0, CONVST=1, CS=0
 nop [6]                ; 7 cycles = 56 ns ≥ tw5
-in pins, 16            ; sample DB[15:0]
-push block             ; push to FIFO
+in pins, 16            ; sample DB[15:0] : the autopush will handle the data
 
 ; --- RETURN TO IDLE ---
 set pins, 0b111        ; RD=1, CONVST=1, CS=1
