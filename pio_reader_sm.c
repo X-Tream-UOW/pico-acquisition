@@ -13,7 +13,7 @@
 PIO pio = pio0;
 uint sm_reader = 0;
 
-void init_pio_reader_sm(void) {
+void setup_reader_sm(void) {
     uint offset_reader = pio_add_program(pio, &reader_program);
     sm_reader = pio_claim_unused_sm(pio, true);
 

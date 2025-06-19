@@ -1,3 +1,6 @@
 #pragma once
 
-void start_spi_dma_transfer(void);
+bool use_buffer1;
+int spi_dma_chan;
+
+void setup_spi_dma();

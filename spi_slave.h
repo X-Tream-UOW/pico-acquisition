@@ -1,3 +1,9 @@
-#pragma once
+#ifndef SPI_SLAVE_H
+#define SPI_SLAVE_H
 
-void setup_spi(void);
+extern PIO spi_pio;
+extern uint sm_spi;
+
+void setup_spi_sm(void);
+
+#endif

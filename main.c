@@ -17,34 +17,32 @@ int main() {
 
     init_gpio();
     setup_pwm(ACQ_FREQ);
-    sleep_ms(100);
-    init_pio_reader_sm();
-    setup_dma();
-    start_spi_dma_transfer();
-  
-    uint8_t counter = 0;
-    printf("SPI Ready\n");
-    setup_spi();
+
+    setup_reader_sm();
+    setup_reader_dma();
+
+    setup_spi_sm();
+    setup_sp_dma();
 
     while (true) {
 
-        if (dma_paused) {
+        if (reader_dma_paused) {
             printf("DMA paused — waiting for buffer release\n");
             sleep_ms(1000);
         }
 
-        if (buffer1_ready && gpio_get(ACK_PIN)) {
-            buffer1_ready = false;
-            clear_signals();
+        if (buffer1_ready && gpio_get(ACK_PIN)) { // The Pi just polled out the buffer 1
+            buffer1_ready = false;  // Mark buffer as available for filling
+            clear_signals();  // Reset READY and ACK
             printf("Buffer 1 consumed\n");
-            resume_dma();
+            resume_reader_dma();
         }
 
         if (buffer2_ready && gpio_get(ACK_PIN)) {
             buffer2_ready = false;
             clear_signals();
             printf("Buffer 2 consumed\n");
-            resume_dma();
+            resume_reader_dma();
         }
     }
 }

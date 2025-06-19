@@ -11,9 +11,9 @@ extern uint16_t buffer2[BUFFER_SIZE];
 
 extern volatile bool buffer1_ready;
 extern volatile bool buffer2_ready;
-extern volatile bool dma_paused;
+extern volatile bool reader_dma_paused;
 
-void setup_dma(void);
-void resume_dma(void);
+void setup_reader_dma(void);
+void resume_reader_dma(void);
 
 #endif

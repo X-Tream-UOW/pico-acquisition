@@ -8,21 +8,23 @@
 #define CS_PIN   27
 #define SCK_PIN  22
 
-int setup_spi() {
+PIO spi_pio = pio0;
+uint sm_spi = 0;
 
-    PIO pio = pio0;
-    uint offset = pio_add_program(pio, &spi_slave_program);
-    uint sm = pio_claim_unused_sm(pio, true);
+int setup_spi_sm() {
 
-    pio_gpio_init(pio, CS_PIN);
-    pio_gpio_init(pio, SCK_PIN);
-    pio_gpio_init(pio, MISO_PIN);
+    uint offset = pio_add_program(spi_pio, &spi_slave_program);
+    uint sm_spi = pio_claim_unused_sm(spi_pio, true);
+
+    pio_gpio_init(spi_pio, CS_PIN);
+    pio_gpio_init(spi_pio, SCK_PIN);
+    pio_gpio_init(spi_pio, MISO_PIN);
 
     uint32_t pin_mask_output = 1u << MISO_PIN;
     uint32_t pin_mask_input = (1u << CS_PIN) | (1u << SCK_PIN);
     uint32_t full_mask = pin_mask_output | pin_mask_input;
 
-    pio_sm_set_pindirs_with_mask(pio, sm, pin_mask_output, full_mask); 
+    pio_sm_set_pindirs_with_mask(spi_pio, sm_spi, pin_mask_output, full_mask); 
 
     pio_sm_config c = spi_slave_program_get_default_config(offset);
 
@@ -30,8 +32,8 @@ int setup_spi() {
     sm_config_set_out_pins(&c, MISO_PIN, 1);
     sm_config_set_out_shift(&c, false, true, 8);  // MSB-first
 
-    pio_sm_init(pio, sm, offset, &c);
-    pio_sm_set_enabled(pio, sm, true);
+    pio_sm_init(spi_pio, sm_spi, offset, &c);
+    pio_sm_set_enabled(spi_pio, sm_spi, true);
 
     uint8_t counter = 0;
 }

@@ -6,6 +6,6 @@
 extern PIO pio;
 extern uint sm_reader;
 
-void init_pio_reader_sm(void);
+void setup_reader_sm(void);
 
 #endif
