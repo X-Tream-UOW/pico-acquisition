@@ -11,7 +11,7 @@
 PIO spi_pio = pio0;
 uint sm_spi = 0;
 
-int setup_spi_sm() {
+void setup_spi_sm(void) {
 
     uint offset = pio_add_program(spi_pio, &spi_slave_program);
     sm_spi = pio_claim_unused_sm(spi_pio, true);
@@ -30,11 +30,9 @@ int setup_spi_sm() {
 
     sm_config_set_in_pins(&c, SCK_PIN);
     sm_config_set_out_pins(&c, MISO_PIN, 1);
-    sm_config_set_out_shift(&c, false, true, 8);  // MSB-first
+    sm_config_set_out_shift(&c, false, true, 16);  // MSB-first
 
     pio_sm_init(spi_pio, sm_spi, offset, &c);
     pio_sm_set_enabled(spi_pio, sm_spi, true);
-
-    uint8_t counter = 0;
 }
 

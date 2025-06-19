@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 1024
 
 extern uint16_t buffer1[BUFFER_SIZE];
 extern uint16_t buffer2[BUFFER_SIZE];

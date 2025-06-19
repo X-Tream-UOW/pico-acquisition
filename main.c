@@ -15,7 +15,7 @@
 #include "spi_dma.h"
 #include "dma_irq_mux.h"
 
-#define ACQ_FREQ 50000.0f
+#define ACQ_FREQ 1000000.0f
 
 int main() {
     stdio_init_all();
@@ -38,22 +38,19 @@ int main() {
     while (true) {
 
         if (reader_dma_paused) {
-            printf("DMA paused — waiting for buffer release\n");
-            sleep_ms(1000);
+            printf("[Reader] DMA paused — waiting for buffer release\n");
+            sleep_ms(100);
         }
 
-        if (buffer1_ready && gpio_get(ACK_PIN)) { // The Pi just polled out the buffer 1
-            buffer1_ready = false;  // Mark buffer as available for filling
-            clear_signals();  // Reset READY and ACK
-            printf("Buffer 1 consumed\n");
-            resume_reader_dma();
+        if (buffer1_ready) {
+            printf("[Main] Buffer 1 filled and ready to send\n");
+            sleep_ms(100);
         }
 
-        if (buffer2_ready && gpio_get(ACK_PIN)) {
-            buffer2_ready = false;
-            clear_signals();
-            printf("Buffer 2 consumed\n");
-            resume_reader_dma();
+        if (buffer2_ready) {
+            printf("[Main] Buffer 2 filled and ready to send\n");
+            sleep_ms(100);
         }
+
     }
 }
