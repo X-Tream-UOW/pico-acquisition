@@ -3,11 +3,20 @@
 #include "hardware/dma.h"
 #include "hardware/pio.h"
 #include "adc_dma.h"
-#include "spi_slave.h"
+#include "spi_slave_sm.h"
 
 bool use_buffer1 = true;
 
-int spi_dma_chan = 0;
+int spi_dma_chan = -1;
+
+void spi_dma_handler() {
+    dma_hw->ints0 = 1u << spi_dma_chan;  // Clear IRQ
+
+    use_buffer1 = !use_buffer1;
+    uint16_t* next_buf = use_buffer1 ? buffer1 : buffer2;
+
+    dma_channel_set_read_addr(spi_dma_chan, next_buf, true);
+}
 
 void setup_spi_dma() {
     spi_dma_chan = dma_claim_unused_channel(true);
@@ -23,24 +32,11 @@ void setup_spi_dma() {
         &c,
         &spi_pio->txf[sm_spi],   // write addr (PIO TX FIFO)
         buffer1,         // read addr (your buffer)
-        BUFFER_SIZE,     // number of 32-bit words
+        BUFFER_SIZE,     // number of 16-bit words
         true             // start immediately
     );
 
     dma_channel_set_irq0_enabled(spi_dma_chan, true);
-    irq_set_exclusive_handler(DMA_IRQ_0, spi_dma_handler);
-    irq_set_enabled(DMA_IRQ_0, true);
-
-    dma_channel_start(spi_dma_chan);
-}
-
-void spi_dma_handler() {
-    dma_hw->ints0 = 1u << spi_dma_chan;  // Clear IRQ
-
-    use_buffer1 = !use_buffer1;
-    uint16_t* next_buf = use_buffer1 ? buffer1 : buffer2;
-
-    dma_channel_set_read_addr(spi_dma_chan, next_buf, true);
 }
 
 

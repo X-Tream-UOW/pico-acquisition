@@ -15,7 +15,7 @@ volatile bool buffer1_ready = false;
 volatile bool buffer2_ready = false;
 volatile bool reader_dma_paused = false;
 
-static int reader_dma_chan;
+int reader_dma_chan = -1;
 extern PIO pio;
 extern uint sm_reader;
 
@@ -88,8 +88,4 @@ void setup_reader_dma() {
     );
 
     dma_channel_set_irq0_enabled(reader_dma_chan, true);
-    irq_set_exclusive_handler(DMA_IRQ_0, reader_dma_handler);
-    irq_set_enabled(DMA_IRQ_0, true);
-
-    dma_channel_start(reader_dma_chan);
 }

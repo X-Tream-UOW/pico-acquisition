@@ -43,8 +43,9 @@ target_sources(ads8405-reader PRIVATE   main.c
                                         pwm_trigger.c 
                                         adc_dma.c 
                                         pio_reader_sm.c 
-                                        spi_slave.c 
-                                        spi_dma.c)
+                                        spi_slave_sm.c 
+                                        spi_dma.c
+                                        dma_irq_mux.c)
 
 pico_enable_stdio_usb(ads8405-reader 1)
 

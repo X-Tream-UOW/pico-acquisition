@@ -13,7 +13,10 @@ extern volatile bool buffer1_ready;
 extern volatile bool buffer2_ready;
 extern volatile bool reader_dma_paused;
 
+extern int reader_dma_chan;
+
 void setup_reader_dma(void);
 void resume_reader_dma(void);
+void __isr reader_dma_handler();
 
 #endif

@@ -1,12 +1,19 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "adc_dma.h"
-#include "pio_reader_sm.h"
-#include "pwm_trigger.h"
+#include "hardware/dma.h"
+
 #include "gpio_init.h"
+#include "pwm_trigger.h"
+
+#include "pio_reader_sm.h"
+#include "spi_slave_sm.h"
+
 #include "reader.pio.h"
-#include "spi_slave.h"
+#include "spi_slave.pio.h"
+
+#include "adc_dma.h"
 #include "spi_dma.h"
+#include "dma_irq_mux.h"
 
 #define ACQ_FREQ 50000.0f
 
@@ -22,7 +29,11 @@ int main() {
     setup_reader_dma();
 
     setup_spi_sm();
-    setup_sp_dma();
+    setup_spi_dma();
+    setup_dma_irq_handler();
+
+    dma_channel_start(spi_dma_chan);
+    dma_channel_start(reader_dma_chan);
 
     while (true) {
 

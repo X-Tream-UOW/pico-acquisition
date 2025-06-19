@@ -14,7 +14,7 @@ uint sm_spi = 0;
 int setup_spi_sm() {
 
     uint offset = pio_add_program(spi_pio, &spi_slave_program);
-    uint sm_spi = pio_claim_unused_sm(spi_pio, true);
+    sm_spi = pio_claim_unused_sm(spi_pio, true);
 
     pio_gpio_init(spi_pio, CS_PIN);
     pio_gpio_init(spi_pio, SCK_PIN);
