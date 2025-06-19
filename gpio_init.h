@@ -5,6 +5,6 @@
 #define ACK_PIN   26
 
 void init_gpio(void);
-void clear_signals(void);
+void wait_for_polling(void);
 
 #endif

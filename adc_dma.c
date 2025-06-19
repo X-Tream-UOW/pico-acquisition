@@ -7,6 +7,7 @@
 #include "pio_reader_sm.h"
 #include "gpio_init.h"
 #include "spi_dma.h"
+#include <stdio.h>
 
 uint16_t buffer1[BUFFER_SIZE];
 uint16_t buffer2[BUFFER_SIZE];
@@ -21,29 +22,40 @@ extern uint sm_reader;
 
 void __isr reader_dma_handler() {
     dma_hw->ints0 = 1u << reader_dma_chan;
-    static bool ping = false;
 
-    if (ping) {
-        buffer2_ready = true;
-        if (!buffer1_ready) {
-            dma_channel_set_write_addr(reader_dma_chan, buffer1, false);
-            dma_channel_set_trans_count(reader_dma_chan, BUFFER_SIZE, true);
-        } else {
-            reader_dma_paused = true;
-            gpio_put(READY_PIN, 1);
-        }
-    } else {
+    static bool last_used_buffer1 = false;
+
+    if (!last_used_buffer1) {
         buffer1_ready = true;
         gpio_put(READY_PIN, 1);
+        printf("[ADC DMA] Buffer 1 filled and ready to send\n");
+
         if (!buffer2_ready) {
             dma_channel_set_write_addr(reader_dma_chan, buffer2, false);
             dma_channel_set_trans_count(reader_dma_chan, BUFFER_SIZE, true);
-        } else {
-            reader_dma_paused = true;
+            last_used_buffer1 = true;
+            return;
+        }
+
+    } else {
+        buffer2_ready = true;
+        gpio_put(READY_PIN, 1);
+        printf("[ADC DMA] Buffer 2 filled and ready to send\n");
+
+        if (!buffer1_ready) {
+            dma_channel_set_write_addr(reader_dma_chan, buffer1, false);
+            dma_channel_set_trans_count(reader_dma_chan, BUFFER_SIZE, true);
+            last_used_buffer1 = false;
+            return;
         }
     }
 
-    ping = !ping;
+    // Both buffers are full → pause and try to resume
+    reader_dma_paused = true;
+    printf("[ADC DMA] Both buffers full — pausing acquisition\n");
+
+    // Edge fix: just try resuming in case something cleared
+    resume_reader_dma();
 }
 
 void resume_reader_dma(void) {

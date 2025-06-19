@@ -25,6 +25,8 @@ int main() {
     init_gpio();
     setup_pwm(ACQ_FREQ);
 
+    sleep_ms(1000);
+
     setup_reader_sm();
     setup_reader_dma();
 
@@ -36,21 +38,6 @@ int main() {
     dma_channel_start(reader_dma_chan);
 
     while (true) {
-
-        if (reader_dma_paused) {
-            printf("[Reader] DMA paused — waiting for buffer release\n");
-            sleep_ms(100);
-        }
-
-        if (buffer1_ready) {
-            printf("[Main] Buffer 1 filled and ready to send\n");
-            sleep_ms(100);
-        }
-
-        if (buffer2_ready) {
-            printf("[Main] Buffer 2 filled and ready to send\n");
-            sleep_ms(100);
-        }
-
-    }
+        tight_loop_contents();
+}
 }
