@@ -3,7 +3,7 @@
 .wrap_target
 
 wait 0 pin 5       ; Wait for CS LOW
-set y, 7
+set y, 15
 
 bitloop:
     out pins, 1

@@ -1,9 +1,9 @@
 #include "hardware/dma.h"
 #include "hardware/irq.h"
-#include "adc_dma.h"
+#include "reader_dma.h"
 #include "spi_dma.h"
 
-void dma_irq_handler() {
+void __isr dma_irq_handler() {
     uint32_t status = dma_hw->ints0;
 
     if (status & (1u << reader_dma_chan)) {
@@ -13,7 +13,7 @@ void dma_irq_handler() {
 
     if (status & (1u << spi_dma_chan)) {
         dma_hw->ints0 = 1u << spi_dma_chan;
-        spi_dma_handler();
+        // spi_dma_handler();
     }
 }
 

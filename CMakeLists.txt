@@ -41,11 +41,13 @@ pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/spi_slave.pio)
 target_sources(ads8405-reader PRIVATE   main.c 
                                         gpio_init.c 
                                         pwm_trigger.c 
-                                        adc_dma.c 
+                                        reader_dma.c 
                                         pio_reader_sm.c 
                                         spi_slave_sm.c 
                                         spi_dma.c
-                                        dma_irq_mux.c)
+                                        dma_irq_mux.c
+                                        buffer_manager.c
+                                        gpio_ack.c)
 
 pico_enable_stdio_usb(ads8405-reader 1)
 
