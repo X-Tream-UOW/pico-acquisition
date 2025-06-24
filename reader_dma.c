@@ -30,7 +30,6 @@ void setup_reader_dma(void) {
 
     current_buffer = buffer_manager_get_free_buffer();
     if (!current_buffer) {
-        printf("[ERROR] No free buffer available during DMA setup\n");
         return;
     }
 
