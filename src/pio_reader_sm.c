@@ -37,6 +37,14 @@ void setup_reader_sm(void) {
     pio_sm_set_consecutive_pindirs(pio, sm_reader, CS_PIN, 3, true);
     pio_sm_set_consecutive_pindirs(pio, sm_reader, DB_STARTS, DB_COUNT, false);
     pio_sm_set_consecutive_pindirs(pio, sm_reader, BUSY_PIN, 1, false);
+}
 
+void clean_and_start_reader_sm(void) {
+    pio_sm_clear_fifos(pio, sm_reader);
     pio_sm_set_enabled(pio, sm_reader, true);
+}
+
+void stop_and_clear_reader_sm(void) {
+    pio_sm_set_enabled(pio, sm_reader, false);
+    pio_sm_clear_fifos(pio, sm_reader);
 }

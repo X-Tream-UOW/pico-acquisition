@@ -8,5 +8,6 @@ extern uint16_t* current_spi_buffer;
 
 void setup_spi_dma(void);
 void trigger_spi_dma(uint16_t* buffer);
+void stop_spi_dma(void);
 
 #endif

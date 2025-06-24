@@ -45,6 +45,38 @@ int main() {
     dma_channel_start(spi_dma_chan);
     dma_channel_start(reader_dma_chan);
 
+    clean_and_start_reader_sm();
+    clean_and_start_spi_sm();
+
+    sleep_ms(1000);
+
+    stop_spi_dma();
+    stop_reader_dma();
+
+    stop_and_clear_reader_sm();
+    stop_and_clear_spi_sm();
+
+    sleep_ms(1000);
+
+    buffer_manager_init(buffer1, buffer2);
+
+    setup_reader_dma();
+    setup_spi_dma();
+
+    dma_channel_start(spi_dma_chan);
+    dma_channel_start(reader_dma_chan);
+
+    clean_and_start_reader_sm();
+    clean_and_start_spi_sm();
+
+    sleep_ms(1000);
+
+    stop_spi_dma();
+    stop_reader_dma();
+
+    stop_and_clear_reader_sm();
+    stop_and_clear_spi_sm();
+
     while (true) {
         tight_loop_contents();
     }

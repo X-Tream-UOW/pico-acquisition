@@ -6,4 +6,5 @@
 extern int reader_dma_chan;
 
 void setup_reader_dma(void);
+void stop_reader_dma(void);
 void __isr reader_dma_handler(void);

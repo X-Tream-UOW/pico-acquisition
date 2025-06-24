@@ -20,27 +20,32 @@ void reader_dma_handler(void) {  // This is triggered when a buffer is filled
 }
 
 void setup_reader_dma(void) {
-    reader_dma_chan = dma_claim_unused_channel(true);
-    dma_channel_config cfg = dma_channel_get_default_config(reader_dma_chan);
+    if (reader_dma_chan < 0)
+        reader_dma_chan = dma_claim_unused_channel(true);
 
+    dma_channel_config cfg = dma_channel_get_default_config(reader_dma_chan);
     channel_config_set_read_increment(&cfg, false);
     channel_config_set_write_increment(&cfg, true);
     channel_config_set_transfer_data_size(&cfg, DMA_SIZE_16);
     channel_config_set_dreq(&cfg, pio_get_dreq(pio, sm_reader, false));
 
     current_buffer = buffer_manager_get_free_buffer();
-    if (!current_buffer) {
-        return;
-    }
+    if (!current_buffer) return;
 
     dma_channel_configure(
         reader_dma_chan,
         &cfg,
-        current_buffer,                  // Destination buffer
-        &pio->rxf[sm_reader],            // Source: RX FIFO
+        current_buffer,
+        &pio->rxf[sm_reader],
         BUFFER_SIZE,
         false
     );
 
     dma_channel_set_irq0_enabled(reader_dma_chan, true);
+}
+
+void stop_reader_dma(void) {
+    dma_hw->ints0 = 1u << reader_dma_chan;
+    dma_channel_abort(reader_dma_chan);
+    dma_hw->ints0 = 1u << reader_dma_chan;
 }

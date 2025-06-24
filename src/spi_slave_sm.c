@@ -34,6 +34,15 @@ void setup_spi_sm(void) {
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
     pio_sm_init(pio, sm_spi, offset_spi, &c);
+}
+
+void clean_and_start_spi_sm(void) {
+    pio_sm_clear_fifos(pio, sm_spi);
     pio_sm_set_enabled(pio, sm_spi, true);
+}
+
+void stop_and_clear_spi_sm(void) {
+    pio_sm_set_enabled(pio, sm_spi, false);
+    pio_sm_clear_fifos(pio, sm_spi);
 }
 
