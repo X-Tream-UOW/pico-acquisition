@@ -33,22 +33,13 @@ project(ads8405-reader C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-add_executable(ads8405-reader)
+file(GLOB SOURCES "src/*.c")
+add_executable(ads8405-reader ${SOURCES})
 
-pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/reader.pio)
-pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/spi_slave.pio)
+pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/pio/reader.pio)
+pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/pio/spi_slave.pio)
 
-target_sources(ads8405-reader PRIVATE   main.c 
-                                        gpio_init.c 
-                                        pwm_trigger.c 
-                                        reader_dma.c 
-                                        pio_reader_sm.c 
-                                        spi_slave_sm.c 
-                                        spi_dma.c
-                                        dma_irq_mux.c
-                                        buffer_manager.c
-                                        gpio_ack.c)
-
+target_include_directories(ads8405-reader PRIVATE include)
 pico_enable_stdio_usb(ads8405-reader 1)
 
 target_link_libraries(ads8405-reader
