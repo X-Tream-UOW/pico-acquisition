@@ -1,3 +1,3 @@
 #pragma once
 
-void setup_ack_gpio(void);
+void setup_gpio_irq(void);

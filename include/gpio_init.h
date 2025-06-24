@@ -3,8 +3,8 @@
 
 #define READY_PIN 21
 #define ACK_PIN   26
+#define ACQ_PIN   28
 
 void init_gpios(void);
-void wait_for_polling(void);
 
 #endif
