@@ -1,25 +1,18 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "hardware/dma.h"
 
 #include "gpio_init.h"
-#include "pwm_trigger.h"
 #include "gpio_ack.h"
-
+#include "pwm_trigger.h"
 #include "pio_reader_sm.h"
 #include "spi_slave_sm.h"
-
-#include "reader.pio.h"
-#include "spi_slave.pio.h"
-
+#include "acquisition_control.h"
 #include "buffer_manager.h"
-#include "reader_dma.h"
-#include "spi_dma.h"
-#include "dma_irq_mux.h"
 
 #define ACQ_FREQ 1000000.0f
 
-extern BufferManager buffer_mgr;
+extern uint16_t buffer1[BUFFER_SIZE];
+extern uint16_t buffer2[BUFFER_SIZE];
 
 int main() {
     stdio_init_all();
@@ -30,52 +23,20 @@ int main() {
     setup_ack_gpio();
     setup_pwm(ACQ_FREQ);
 
-    sleep_ms(100);
-
-    buffer_manager_init(buffer1, buffer2);
-
-    setup_dma_irq_handler();
-
     setup_reader_sm();
     setup_spi_sm();
 
-    setup_reader_dma();
-    setup_spi_dma();
-   
-    dma_channel_start(spi_dma_chan);
-    dma_channel_start(reader_dma_chan);
+    sleep_ms(100);
 
-    clean_and_start_reader_sm();
-    clean_and_start_spi_sm();
+    start_acquisition();
+    sleep_ms(1000);
+    stop_acquisition();
 
     sleep_ms(1000);
-
-    stop_spi_dma();
-    stop_reader_dma();
-
-    stop_and_clear_reader_sm();
-    stop_and_clear_spi_sm();
-
+    
+    start_acquisition();
     sleep_ms(1000);
-
-    buffer_manager_init(buffer1, buffer2);
-
-    setup_reader_dma();
-    setup_spi_dma();
-
-    dma_channel_start(spi_dma_chan);
-    dma_channel_start(reader_dma_chan);
-
-    clean_and_start_reader_sm();
-    clean_and_start_spi_sm();
-
-    sleep_ms(1000);
-
-    stop_spi_dma();
-    stop_reader_dma();
-
-    stop_and_clear_reader_sm();
-    stop_and_clear_spi_sm();
+    stop_acquisition();
 
     while (true) {
         tight_loop_contents();
