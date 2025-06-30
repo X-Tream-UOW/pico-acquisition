@@ -9,7 +9,6 @@
 
 #include "hardware/dma.h"
 
-// Buffers must be defined here or externally declared if already defined
 extern uint16_t buffer1[BUFFER_SIZE];
 extern uint16_t buffer2[BUFFER_SIZE];
 

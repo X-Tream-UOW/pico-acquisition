@@ -40,8 +40,8 @@ void stop_spi_dma(void) {
 
 void trigger_spi_dma(uint16_t* buffer) {
     current_spi_buffer = buffer;
-
-    // Update source address and re-start
+    dma_channel_abort(spi_dma_chan);
+    // Update source address and re-start 
     dma_channel_set_read_addr(spi_dma_chan, buffer, false);
     dma_channel_set_trans_count(spi_dma_chan, BUFFER_SIZE, true);
 }
