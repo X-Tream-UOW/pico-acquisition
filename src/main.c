@@ -7,12 +7,13 @@
 #include "pio_reader_sm.h"
 #include "spi_slave_sm.h"
 
+#include "acquisition_control.h"
+#include "hardware/clocks.h"
+
 #define ACQ_FREQ 1000000.0f
 
 int main() {
-    stdio_init_all();
-    sleep_ms(2000);
-    printf("Connected\n");
+    set_sys_clock_khz(300000, false);
 
     init_gpios();
     setup_gpio_irq(); 

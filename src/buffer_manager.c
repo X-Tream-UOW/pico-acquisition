@@ -40,7 +40,7 @@ uint16_t* buffer_manager_get_full_buffer(void) {
 void buffer_manager_mark_full(uint16_t* buffer_ptr) {
 
     for (int i = 0; i < BUFFER_SIZE; ++i) {
-        buffer_ptr[i] = 0xFFFF;
+        buffer_ptr[i] = 0xAAAC;
     }
 
     if (buffer_ptr == buffer_mgr.buffers[0]) {

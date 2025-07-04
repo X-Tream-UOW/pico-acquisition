@@ -4,6 +4,7 @@
 void init_gpios(void) {
     gpio_init(READY_PIN);
     gpio_set_dir(READY_PIN, GPIO_OUT);
+    gpio_pull_down(READY_PIN);
     gpio_put(READY_PIN, 0);
 
     gpio_init(ACK_PIN);

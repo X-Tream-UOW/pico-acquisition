@@ -1,5 +1,5 @@
 .program reader
-.clock_div 1  
+.clock_div 2.3 
 ; 150 MHz ~= 6.66 ns per cycle // TODO : recompute the delays with 150Mhz
 
 .wrap_target
