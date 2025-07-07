@@ -14,4 +14,8 @@ void init_gpios(void) {
     gpio_init(ACQ_PIN);
     gpio_set_dir(ACQ_PIN, GPIO_IN);
     gpio_pull_down(ACQ_PIN);
+
+    gpio_init(PIN_LED_ON);
+    gpio_set_dir(PIN_LED_ON, GPIO_OUT);
+    gpio_put(PIN_LED_ON, 1);
 }

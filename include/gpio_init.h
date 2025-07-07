@@ -2,6 +2,7 @@
 #define GPIO_INIT_H
 
 #define READY_PIN 21
+#define PIN_LED_ON 25
 #define ACK_PIN   26
 #define ACQ_PIN   28
 

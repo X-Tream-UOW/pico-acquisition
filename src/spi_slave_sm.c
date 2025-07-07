@@ -30,7 +30,7 @@ void setup_spi_sm(void) {
     pio_sm_config c = spi_slave_program_get_default_config(offset_spi);
 
     sm_config_set_out_pins(&c, MISO_PIN, 1);
-    sm_config_set_out_shift(&c, false, true, 16);  // MSB-first
+    sm_config_set_out_shift(&c, true, true, 16);  // MSB-first
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
     pio_sm_init(pio, sm_spi, offset_spi, &c);
