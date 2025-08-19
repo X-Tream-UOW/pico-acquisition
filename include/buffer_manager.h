@@ -4,11 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define BUFFER_SIZE 65536
+#define BUFFER_SIZE 65536  // 2^16 samples
 
 typedef struct {
     uint16_t* buffers[2];
-    bool full[2];  // renamed from "ready"
+    bool full[2];
 } BufferManager;
 
 extern BufferManager buffer_mgr;

@@ -1,3 +1,6 @@
+/* This files configures the DMA channel which will transport samples from the reader fifo pio state machine
+to the buffer in memory. */
+
 #include "buffer_manager.h"
 #include "hardware/dma.h"
 #include "hardware/pio.h"
@@ -24,10 +27,10 @@ void setup_reader_dma(void) {
         reader_dma_chan = dma_claim_unused_channel(true);
 
     dma_channel_config cfg = dma_channel_get_default_config(reader_dma_chan);
-    channel_config_set_read_increment(&cfg, false);
-    channel_config_set_write_increment(&cfg, true);
-    channel_config_set_transfer_data_size(&cfg, DMA_SIZE_16);
-    channel_config_set_dreq(&cfg, pio_get_dreq(pio, sm_reader, false));
+    channel_config_set_read_increment(&cfg, false);  // We always read from the SM fifo
+    channel_config_set_write_increment(&cfg, true);  // Increment read adress to fill the RAM buffer
+    channel_config_set_transfer_data_size(&cfg, DMA_SIZE_16);  // 16-bit samples 
+    channel_config_set_dreq(&cfg, pio_get_dreq(pio, sm_reader, false));  // The data request source is the one fired by the PIO SM
 
     current_buffer = buffer_manager_get_free_buffer();
     if (!current_buffer) return;
@@ -41,7 +44,7 @@ void setup_reader_dma(void) {
         false
     );
 
-    dma_channel_set_irq0_enabled(reader_dma_chan, true);
+    dma_channel_set_irq0_enabled(reader_dma_chan, true);  // Enable the interrupts to fire on transfer's end to mark buffer as full
 }
 
 void stop_reader_dma(void) {

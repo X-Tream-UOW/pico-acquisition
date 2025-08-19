@@ -10,10 +10,10 @@
 #include "acquisition_control.h"
 #include "hardware/clocks.h"
 
-#define ACQ_FREQ 1000000.0f
+#define ACQ_FREQ 1000000.0f  // The acquisition frequency can be tweaked here (the adc can goes up to 1.25MS/s)
 
 int main() {
-    set_sys_clock_khz(300000, false);
+    set_sys_clock_khz(300000, false);  // Overclocking for ns-control in the state machines
 
     init_gpios();
     setup_gpio_irq(); 

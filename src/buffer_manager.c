@@ -1,3 +1,6 @@
+/* This file contains all the logic to fill, send and clear the buffers. They provide high level functions 
+that can be called by the other components of the system to obtain an adress were the data can be written or sent from. */
+
 #include "buffer_manager.h"
 #include "hardware/gpio.h"
 #include <stdio.h>
@@ -39,9 +42,9 @@ uint16_t* buffer_manager_get_full_buffer(void) {
 
 void buffer_manager_mark_full(uint16_t* buffer_ptr) {
 
-    // for (int i = 0; i < BUFFER_SIZE; ++i) {
-    //     buffer_ptr[i] = 0xAAAC;
-    // }
+    for (int i = 0; i < BUFFER_SIZE; ++i) { // Dummy data for test purpose
+        buffer_ptr[i] = 0xAAAC;
+    }
 
     if (buffer_ptr == buffer_mgr.buffers[0]) {
         buffer_mgr.full[0] = true;

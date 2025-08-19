@@ -1,3 +1,5 @@
+/* This file configures the PIO state machine to act as a SPI slave for transmitting data to the pi */
+
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
 #include "spi_slave.pio.h"
@@ -30,11 +32,13 @@ void setup_spi_sm(void) {
     pio_sm_config c = spi_slave_program_get_default_config(offset_spi);
 
     sm_config_set_out_pins(&c, MISO_PIN, 1);
-    sm_config_set_out_shift(&c, true, true, 16);  // MSB-first
+    sm_config_set_out_shift(&c, true, true, 16);  // right shift (MSB-first), autopull at 16-bits
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
     pio_sm_init(pio, sm_spi, offset_spi, &c);
 }
+
+// Helper functions to start and stop the transfer
 
 void clean_and_start_spi_sm(void) {
     pio_sm_clear_fifos(pio, sm_spi);

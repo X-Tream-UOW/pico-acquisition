@@ -12,6 +12,8 @@
 extern uint16_t buffer1[BUFFER_SIZE];
 extern uint16_t buffer2[BUFFER_SIZE];
 
+// These functions are wrappers to start and stop the different system components in the right order.
+
 void start_acquisition(void) {
     buffer_manager_init(buffer1, buffer2);
 

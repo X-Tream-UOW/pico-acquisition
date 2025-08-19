@@ -1,3 +1,5 @@
+/* This file implements the DMA transfer from the RAM buffers to the SPI PIO state machine. */
+
 #include "buffer_manager.h"
 #include "hardware/dma.h"
 #include "hardware/pio.h"
@@ -17,9 +19,9 @@ void setup_spi_dma(void) {
 
     dma_channel_config cfg = dma_channel_get_default_config(spi_dma_chan);
 
-    channel_config_set_read_increment(&cfg, true);
-    channel_config_set_write_increment(&cfg, false);
-    channel_config_set_transfer_data_size(&cfg, DMA_SIZE_16);
+    channel_config_set_read_increment(&cfg, true);  // We increment the read adress to parse the buffer
+    channel_config_set_write_increment(&cfg, false); // We always write to the SM fifo
+    channel_config_set_transfer_data_size(&cfg, DMA_SIZE_16);  // 16-bits samples
     channel_config_set_dreq(&cfg, pio_get_dreq(pio, sm_spi, true));
 
     dma_channel_configure(
@@ -38,7 +40,7 @@ void stop_spi_dma(void) {
     dma_channel_abort(spi_dma_chan);
 }
 
-void trigger_spi_dma(uint16_t* buffer) {
+void trigger_spi_dma(uint16_t* buffer) {  // triggers a new transfer from the specified buffer
     current_spi_buffer = buffer;
     dma_channel_abort(spi_dma_chan);
 

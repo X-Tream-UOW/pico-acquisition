@@ -2,13 +2,13 @@
 
 .wrap_target
 
-wait 0 pin 27        ; Wait for CS LOW
-set y, 15
+wait 0 pin 27        ; Wait for CS line LOW
+set y, 15            ; Set a counter 
 
 bitloop:
-    wait 1 pin 22   ; Wait for rising CLK
-    out pins, 1      ; send bit to miso line
+    wait 1 pin 22    ; Wait for rising CLK
+    out pins, 1      ; send bit to MISO line
     wait 0 pin 22    ; Wait for falling CLK
-    jmp y-- bitloop
+    jmp y-- bitloop  ; Decrease the counter 
 .wrap
 

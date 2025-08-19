@@ -1,11 +1,11 @@
 .program reader
 .clock_div 2.3 
-; 150 MHz ~= 6.66 ns per cycle // TODO : recompute the delays with 150Mhz
+; Account for overclocking
 
 .wrap_target
 
-wait 0 pin 23 ; ensure the pwn clock is down to sync
-wait 1 pin 23 ; start acquisition on rising edge of the pwm clock
+wait 0 pin 23 ; ensure the PWM clock is down to sync
+wait 1 pin 23 ; start acquisition on rising edge of the PWM clock
 
 ; --- IDLE ---
 set pins, 0b111        ; RD=1, CONVST=1, CS=1

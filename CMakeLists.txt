@@ -28,21 +28,21 @@ set(PICO_BOARD pico2 CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(ads8405-reader C CXX ASM)
+project(pico-acquisition C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 file(GLOB SOURCES "src/*.c")
-add_executable(ads8405-reader ${SOURCES})
+add_executable(pico-acquisition ${SOURCES})
 
-pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/pio/reader.pio)
-pico_generate_pio_header(ads8405-reader ${CMAKE_CURRENT_LIST_DIR}/pio/spi_slave.pio)
+pico_generate_pio_header(pico-acquisition ${CMAKE_CURRENT_LIST_DIR}/pio/reader.pio)
+pico_generate_pio_header(pico-acquisition ${CMAKE_CURRENT_LIST_DIR}/pio/spi_slave.pio)
 
-target_include_directories(ads8405-reader PRIVATE include)
-pico_enable_stdio_usb(ads8405-reader 1)
+target_include_directories(pico-acquisition PRIVATE include)
+pico_enable_stdio_usb(pico-acquisition 1)
 
-target_link_libraries(ads8405-reader
+target_link_libraries(pico-acquisition
         pico_stdlib hardware_pio hardware_dma hardware_irq hardware_clocks hardware_pwm)
 
-pico_add_extra_outputs(ads8405-reader)
+pico_add_extra_outputs(pico-acquisition)

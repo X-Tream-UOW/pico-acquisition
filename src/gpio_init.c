@@ -17,5 +17,5 @@ void init_gpios(void) {
 
     gpio_init(PIN_LED_ON);
     gpio_set_dir(PIN_LED_ON, GPIO_OUT);
-    gpio_put(PIN_LED_ON, 1);
+    gpio_put(PIN_LED_ON, 1);  // Visual debug that the pico is alive
 }
