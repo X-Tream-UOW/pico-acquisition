@@ -13,7 +13,7 @@ void setup_pwm(float acquisition_freq) {
     gpio_set_function(PWM_PIN, GPIO_FUNC_PWM);
     uint slice_num = pwm_gpio_to_slice_num(PWM_PIN);
 
-    const float sys_clk = 150e6f;
+    const float sys_clk = 300e6f; // Acount for overclock
     float clkdiv = 1.0f;
     uint32_t wrap = (uint32_t)((sys_clk / (clkdiv * acquisition_freq)) - 1.0f);  // Computing the pwm wrap to obtain the desired frequency
     if (wrap > 65535) wrap = 65535;
